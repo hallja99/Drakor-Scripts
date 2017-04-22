@@ -49,7 +49,7 @@ button.addEventListener("click", function(){
 		}
 
 		if(thNodes.length == 0){
-			console.log("No one is currently at a TH node, or they are invisible")
+			console.log("No one is currently at a TH node, or they are invisible");
 		}
 		else{
 			for(i = 0; i < thNodes.length; i++){
