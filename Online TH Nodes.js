@@ -1,6 +1,6 @@
 var button = document.createElement("button")
 button.innerHTML = "Find TH Nodes"
-button.class = "navButton gs_topmenu_item"
+button.class = "gs_topmenu_item"
 document.getElementById("gs_topmenu").appendChild(button)
 
 button.addEventListener("click", function(){
