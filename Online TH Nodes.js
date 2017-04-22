@@ -48,8 +48,13 @@ button.addEventListener("click", function(){
 			}
 		}
 
-		for(i = 0; i < thNodes.length; i++){
-			console.log("TH Node at: " + thNodes[i]);
+		if(thNodes.length == 0){
+			console.log("No one is currently at a TH node, or they are invisible")
+		}
+		else{
+			for(i = 0; i < thNodes.length; i++){
+				console.log("TH Node at: " + thNodes[i]);
+			}
 		}
 	},450);
 });
