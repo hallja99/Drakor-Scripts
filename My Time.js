@@ -15,7 +15,7 @@ function update(){
 				var temp = chat[i].children[0].innerText//get the time of the message
 
 				if(temp.indexOf("AM") == -1 && temp.indexOf("PM") == -1){//if the message has already been altered
-					temp = temp.substring(1, temp.length -2).split(":")//split into array of H, M, S
+					temp = temp.substring(1, temp.length -1).split(":")//split into array of H, M, S
 
 					temp[0] = temp[0] - timeOffset;//subtract the server offset from local time
 
