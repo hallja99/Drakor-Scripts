@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         My Time
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1.1
 // @description  Changes all the chat times to local AM/PM times
 // @author       Oveduumnakal
 // @match        http://*.drakor.com*
@@ -28,7 +28,7 @@ function update() {
 
     if (chat != null) { //make sure the chat exists in the screen
         for (var i = 0; i < chat.length; i++) { //loop through the chat objects
-            if (chat[i].className == "cmsg") { //if the object is a message
+            if (chat[i].className == "cmsg" || (chat[i].className == "cmsg areaName" && chat[i].children[1].innerText == "Check Mail Now!")) { //if the object is a message
                 var temp = chat[i].children[0].innerText; //get the time of the message
                 chat[i].children[0].innerText = toAMPM(temp, timeOffset); //set the new time into the chat box
             }
