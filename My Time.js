@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         My Time
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
-// @description  Changes all the chat times to local AM/PM times
+// @version      1.2.1
+// @description  Changes all the chat and skilling times to local AM/PM times
 // @author       Oveduumnakal
 // @match        http://*.drakor.com*
 // @match        https://*.drakor.com*
@@ -24,13 +24,45 @@ function update() {
     //====================================================================================================================
     //Chat Body
 
-    var chat = document.getElementById("dr_chatBody").children; //get all the chat objects
+    var chat = null;
+    try {
+        chat = document.getElementById("dr_chatBody").children; //get all the chat objects
+    } catch (err) {
+        chat = null; //chat isnt there
+    }
+
 
     if (chat != null) { //make sure the chat exists in the screen
         for (var i = 0; i < chat.length; i++) { //loop through the chat objects
             if (chat[i].className == "cmsg" || (chat[i].className == "cmsg areaName" && chat[i].children[1].innerText == "Check Mail Now!")) { //if the object is a message
                 var temp = chat[i].children[0].innerText; //get the time of the message
                 chat[i].children[0].innerText = toAMPM(temp, timeOffset); //set the new time into the chat box
+            }
+        }
+    }
+
+    //====================================================================================================================
+    //Collection/Pattern
+
+    var skill = null;
+    try {
+        skill = document.getElementById("skillResults").children; //get all the skilling objects
+    } catch (err) {
+        skill = null; //not working on a collection or pattern skill
+    }
+
+    if (skill != null) { //make sure the skill results window exists in the screen
+        for (var i = 0; i < skill.length; i++) { //loop through the skill objects
+            if (skill[i].className == "roundResult areaName") { //if the object is a skill result
+                var temp = skill[i].children[0].innerText; //get the time of the result
+
+                if (temp.indexOf("You didn't find anything") != -1) { //handle the "You didnt find anything" case
+                    temp = temp.substring(temp.indexOf("["), temp.indexOf("]") + 1);
+                    skill[i].children[0].innerText = toAMPM(temp, timeOffset) + " You didn't find anything"; //set the new time into the skill box
+                } else { //nothing special to handle
+                    skill[i].children[0].innerText = toAMPM(temp, timeOffset); //set the new time into the chat box
+                }
+
             }
         }
     }
