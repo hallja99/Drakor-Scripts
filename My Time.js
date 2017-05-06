@@ -8,61 +8,71 @@
 // @match        https://*.drakor.com*
 // ==/UserScript==
 
-setInterval(function(){ update(); }, 50); //run constantly
+setInterval(function() {
+    update();
+}, 50); //run constantly
 
-function update(){
-	var drakorTime = new Date( new Date().getTime() + -3 * 3600 * 1000).toUTCString().replace( / GMT$/, "" ).split(" ")[4].split(":")[0]; //get the server's time
-	var now = new Date().toString().split(" ")[4].split(":")[0];//get the user's time
+function update() {
 
-	var timeOffset = drakorTime - now; //find the offset of the time
+    //====================================================================================================================
+    // Time Calculations
 
-	var chat = document.getElementById("dr_chatBody").children; //get all the chat objects
+    var drakorTime = new Date(new Date().getTime() + -3 * 3600 * 1000).toUTCString().replace(/ GMT$/, "").split(" ")[4].split(":")[0]; //get the server's time
+    var now = new Date().toString().split(" ")[4].split(":")[0]; //get the user's time
+    var timeOffset = drakorTime - now; //find the offset of the time
 
-	if(chat != null){//make sure the chat exists in the screen
-		for(var i = 0; i < chat.length; i++){//loop through the chat objects
-			if(chat[i].className == "cmsg"){//if the object is a message
+    //====================================================================================================================
+    //Chat Body
 
-				var temp = chat[i].children[0].innerText; //get the time of the message
+    var chat = document.getElementById("dr_chatBody").children; //get all the chat objects
 
-				if(temp.indexOf("AM") == -1 && temp.indexOf("PM") == -1){//if the message has already been altered
-					temp = temp.substring(1, temp.length -1).split(":");//split into array of H, M, S
+    if (chat != null) { //make sure the chat exists in the screen
+        for (var i = 0; i < chat.length; i++) { //loop through the chat objects
+            if (chat[i].className == "cmsg") { //if the object is a message
+                var temp = chat[i].children[0].innerText; //get the time of the message
+                chat[i].children[0].innerText = toAMPM(temp, timeOffset); //set the new time into the chat box
+            }
+        }
+    }
+}
 
-					temp[0] = temp[0] - timeOffset;//subtract the server offset from local time
+function toAMPM(time, timeOffset) {
+    var temp = time; //to make life easier with the modularization
+    if (temp.indexOf("AM") == -1 && temp.indexOf("PM") == -1) { //if the message has already been altered
+        temp = temp.substring(1, temp.length - 1).split(":"); //split into array of H, M, S
 
-					if(temp[0] < 0){ //normalize for midnight
-						temp[0] = 24 - temp[0];
-					}
-					else if(temp[0] > 23){ //normalize for midnight
-						temp[0] = 24 - temp[0];
-					}
+        temp[0] = temp[0] - timeOffset; //subtract the server offset from local time
 
-					var AM;
-					if(temp[0] < 12){ //check if its the morning
-						AM = true;
+        if (temp[0] < 0) { //normalize for midnight
+            temp[0] = 24 - temp[0];
+        } else if (temp[0] > 23) { //normalize for midnight
+            temp[0] = 24 - temp[0];
+        }
 
-						if(temp[0] == 0){ //if it is midnight
-							temp[0] = 12;
-						}
-					}
-					else{//if its the night
-						if(temp[0] != 12){//if its not noon
-							temp[0] = temp[0] - 12;
-						}
-						AM = false;
-					}
+        var AM;
+        if (temp[0] < 12) { //check if its the morning
+            AM = true;
 
-					var time = "[" + temp[0] + ":" + temp[1] + ":" + temp[2]; //re make the time stamp
+            if (temp[0] == 0) { //if it is midnight
+                temp[0] = 12;
+            }
+        } else { //if its the night
+            if (temp[0] != 12) { //if its not noon
+                temp[0] = temp[0] - 12;
+            }
+            AM = false;
+        }
 
-					if(AM){//finish with am tag
-						time = time + " AM]";
-					}
-					else{//finish with pm tag
-						time = time + " PM]";
-					}
+        var time = "[" + temp[0] + ":" + temp[1] + ":" + temp[2]; //re make the time stamp
 
-					chat[i].children[0].innerText = time; //set the new time into the chat box
-				}
-			}
-		}
-	}
+        if (AM) { //finish with am tag
+            time = time + " AM]";
+        } else { //finish with pm tag
+            time = time + " PM]";
+        }
+
+        return time;
+    } else {
+        return temp;
+    }
 }
