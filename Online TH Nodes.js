@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OnlineTHNodes
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.1.1
 // @description  Prints active TH nodes in the online list to console
 // @author       Oveduumnakal
 // @match        http://*.drakor.com*
@@ -49,13 +49,14 @@ button.addEventListener("click", function() {
         }
 
         if (thNodes.length == 0) {
-            alert("No one is currently at a TH node, or they are invisible")
+            alert("No one is currently at a TH node, or they are invisible");
+			console.log("No one is currently at a TH node, or they are invisible");
         } else {
-            var msg = "";
             for (i = 0; i < thNodes.length; i++) {
-                msg = "TH Node at: " + thNodes[i] + "\n";
+                msg = "TH Node at: " + thNodes[i];
+				alert(msg);
+				console.log(msg);
             }
-            alert(msg);
         }
     }, 450);
 });
