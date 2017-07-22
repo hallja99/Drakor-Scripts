@@ -7,6 +7,7 @@
 // @match        http://*.drakor.com*
 // @match        https://*.drakor.com*
 // ==/UserScript==
+
 function getInv() {
     console.clear();
     $.ajax({
@@ -20,7 +21,7 @@ function getInv() {
             print("%cYour TradeSkills Inventory", "color:#F1C40F;");
             print("%c==========================", "color:#F1C40F;");
 
-            compileVals(mats)
+            compileVals(mats);
 
             $.ajax({
                 url: 'https://drakor.com/masteries/worldbank',
@@ -29,12 +30,12 @@ function getInv() {
                     el.innerHTML = data;
                     var mats = el.getElementsByClassName("tradeMat");
 
-                    console.log("")
-                    console.log("")
+                    console.log("");
+                    console.log("");
                     print("%cYour World Bank Inventory", "color:#F1C40F;");
                     print("%c=========================", "color:#F1C40F;");
 
-                    compileVals(mats)
+                    compileVals(mats);
 
                 }
             });
@@ -83,19 +84,19 @@ function compileVals(mats) {
 
         switch (value.rarity) {
             case "Common":
-                color = "color:#85929E;"
+                color = "color:#85929E;";
                 break;
             case "Superior":
-                color = "color:#229954;"
+                color = "color:#229954;";
                 break;
             case "Rare":
-                color = "color:#3498DB;"
+                color = "color:#3498DB;";
                 break;
             case "Epic":
-                color = "color:#ca5df7;"
+                color = "color:#ca5df7;";
                 break;
             case "Legendary":
-                color = "color:#D35400;"
+                color = "color:#D35400;";
                 break;
         }
 
@@ -161,6 +162,6 @@ function print(str, color) {
 
 
 getInv();
-//var loop = setInterval(function() {
-//    getInv();
-//}, 30000);
+var loop = setInterval(function() {
+    getInv();
+}, 30000);
