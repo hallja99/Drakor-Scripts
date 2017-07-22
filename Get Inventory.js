@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Console Items
+// @name         Console Inventory
 // @namespace    http://tampermonkey.net/
 // @version      1.1.0
 // @description  Prints user's tradeskill inventory to the console
