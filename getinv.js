@@ -1,14 +1,12 @@
 // ==UserScript==
-// @name         Console Inventory
+// @name         Console Items
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
-// @description  Prints user's tradeskill inventory to the console
+// @version      1.1.0
+// @description  Prints user's tradeskill inventory and world bank to the console
 // @author       Oveduumnakal
 // @match        http://*.drakor.com*
 // @match        https://*.drakor.com*
 // ==/UserScript==
-
-
 function getInv() {
     console.clear();
     $.ajax({
@@ -18,83 +16,106 @@ function getInv() {
             el.innerHTML = data;
             var mats = el.getElementsByClassName("tradeMat");
 
-            var arr = [];
-
-            for (var i = 0; i < mats.length; i++) {
-                var mat = mats[i].innerHTML;
-                var clss = mats[i].className.split(" ")[1];
-                var vals = mat.split(">");
-
-                if (vals.length < 4) {
-                    arr.push(patternObj(vals, clss));
-                } else {
-                    arr.push(gatherObj(vals, clss));
-                }
-
-                arr.push();
-            }
-
 
             print("%cYour TradeSkills Inventory", "color:#F1C40F;");
             print("%c==========================", "color:#F1C40F;");
 
-            var curType = "";
-            for (var i = 0; i < arr.length; i++) {
-                var value = arr[i];
+            compileVals(mats)
 
-                if (value.type != curType) {
-                    console.log("");
-                    print("%c" + value.type, "color:#fffc75");
+            $.ajax({
+                url: 'https://drakor.com/masteries/worldbank',
+                success: function(data) {
+                    var el = document.createElement('html');
+                    el.innerHTML = data;
+                    var mats = el.getElementsByClassName("tradeMat");
 
-                    str = "";
-                    for (var j = 0; j < value.type.length; j++) {
-                        str += "-";
-                    }
+                    console.log("")
+                    console.log("")
+                    print("%cYour World Bank Inventory", "color:#F1C40F;");
+                    print("%c=========================", "color:#F1C40F;");
 
-                    print("%c" + str, "color:#fffc75");
+                    compileVals(mats)
 
-                    curType = value.type;
                 }
+            });
 
-                var color;
-
-                switch (value.rarity) {
-                    case "Common":
-                        color = "color:#85929E;"
-                        break;
-                    case "Superior":
-                        color = "color:#229954;"
-                        break;
-                    case "Rare":
-                        color = "color:#3498DB;"
-                        break;
-                    case "Epic":
-                        color = "color:#ca5df7;"
-                        break;
-                    case "Legendary":
-                        color = "color:#D35400;"
-                        break;
-                }
-
-
-                if (value.mastery == null) {
-                    str = value.name + ": " + value.quanity;
-                } else {
-                    str = value.name + " [" + value.mastery + "]: " + value.quanity;
-                }
-
-
-                print("%c" + str, color);
-            }
         }
     });
+
+}
+
+function compileVals(mats) {
+    var arr = [];
+
+    for (var i = 0; i < mats.length; i++) {
+        var mat = mats[i].innerHTML;
+        var clss = mats[i].className.split(" ")[1];
+        var vals = mat.split(">");
+
+        if (vals.length < 4) {
+            arr.push(patternObj(vals, clss));
+        } else {
+            arr.push(gatherObj(vals, clss));
+        }
+
+        arr.push();
+    }
+
+    var curType = "";
+    for (var i = 0; i < arr.length; i++) {
+        var value = arr[i];
+
+        if (value.type != curType) {
+            console.log("");
+            print("%c" + value.type, "color:#fffc75");
+
+            str = "";
+            for (var j = 0; j < value.type.length; j++) {
+                str += "-";
+            }
+
+            print("%c" + str, "color:#fffc75");
+
+            curType = value.type;
+        }
+
+        var color;
+
+        switch (value.rarity) {
+            case "Common":
+                color = "color:#85929E;"
+                break;
+            case "Superior":
+                color = "color:#229954;"
+                break;
+            case "Rare":
+                color = "color:#3498DB;"
+                break;
+            case "Epic":
+                color = "color:#ca5df7;"
+                break;
+            case "Legendary":
+                color = "color:#D35400;"
+                break;
+        }
+
+
+        if (value.mastery == null) {
+            str = value.name + ": " + value.quanity;
+        } else {
+            str = value.name + " [" + value.mastery + "]: " + value.quanity;
+        }
+
+
+        print("%c" + str, color);
+    }
 }
 
 function patternObj(vals, clss) {
     var rarity = vals[0].substring(vals[0].indexOf("=") + 2, vals[0].length - 1);
 
     var name = vals[1].substring(1, vals[1].indexOf("]"));
-    
+
     var number = vals[2].substring(2, vals[2].length);
 
     var rank = null;
@@ -140,6 +161,6 @@ function print(str, color) {
 
 
 getInv();
-var loop = setInterval(function() {
-    getInv();
-}, 30000);
+//var loop = setInterval(function() {
+//    getInv();
+//}, 30000);
